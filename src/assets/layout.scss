@@ -1,0 +1,49 @@
+html{
+    max-width: 400rem;
+    margin: auto;
+}
+:focus-visible {
+    outline:none;
+}
+.params{
+    
+    ul{
+        margin-top: -30px ;
+        top: 0;
+        list-style: none;
+        display: flex;
+
+        flex-direction: row;
+        justify-content: center;
+    }
+    li{
+        padding: 0.2rem 1rem;
+        border-top: thin solid black;
+        border-bottom: thin solid black;
+        font-family: 'Baloo Da 2';
+    }
+    li:hover{
+        background-color: rgba(41, 28, 53, 0.188);
+        transition-duration: 0.5s;
+    }
+}
+.editor{
+    div{
+        position: relative;
+    }
+
+    div:hover{
+        background-color: beige;   
+    }
+    div:hover::before{
+        content: 'p';
+        color: grey;
+        // transform: translateX(-50%);
+        left: -1rem;
+        position: absolute;
+
+    }
+    textarea{
+        overflow: hidden;
+    }
+}
