@@ -1,8 +1,7 @@
 const Selector = () =>{
     return (
-        <div>
+        <div className="selector-form">
             <form>
-                <label>format:</label>
                 <select>
                     <option>\section</option>
                     <option>\subsection</option>

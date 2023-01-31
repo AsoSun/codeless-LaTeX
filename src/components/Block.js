@@ -1,8 +1,9 @@
+import { useRef, useEffect } from "react";
 
 
-const Block = ({key, value, handleChange}) =>{
+const Block = ({key, index}) =>{
     return(
-        <div contentEditable="true" key={key} value={value} onChange={handleChange}></div>
+        <div onInput={()=>handleBlockContent(key)} className="editor" contentEditable="true" name ={key} suppressContentEditableWarning={true} key={index} ref={blockRef} style={{color:"red"}}/>
     )
 }
 

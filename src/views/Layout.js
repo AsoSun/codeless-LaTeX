@@ -4,8 +4,8 @@ import { initial } from "../store/initial.data"
 
 const Layout = () =>{
     const [blocks, updateBlocks]= useState(initial)
-	console.log(blocks)
-    const [isClickAnywhere, setIsClickAnywhere] = useState(false)
+	const [blockId, updateBlockId] = useState(0)
+    const [blockIndex, setBlockIndex] = useState(0)
 	const [isEnter, setEnter] = useState(0)
     // const replaceNode = () =>{
     //     const node = document.querySelector('.editor div')
@@ -14,38 +14,46 @@ const Layout = () =>{
     //     node.replaceWith(p)
     // }
 
-    const blockRef = useRef(0)
+    const blockRef = useRef([])
+	console.log(blocks)
+	console.log(blockRef)
+
     useEffect(() => {
-        blockRef.current.focus();
-      }, [blocks.length]);
+        blockRef.current[blockIndex].focus();
+
+      }, [blockIndex]);
 	
-	useEffect(()=>{
-		addBlock()
-	},[isEnter])
 
-    window.addEventListener('keydown', (e)=>{
-        if (e.key ==='Enter'){
-            e.preventDefault()
-        }
-    })
-    // window.addEventListener('keyup', (e)=>{
-    //     if (e.key ==='Enter'){
-    //         e.preventDefault()
-    //         // addBlock() //会不停循环 callback
-    //         setEnter(isEnter+1)
-    //     }
-    // })
-    // window.addEventListener('click', ()=>{
-    //     setIsClickAnywhere(true)
-    // })
 
-    const addBlock = useCallback(()=>{
-        updateBlocks(()=>[...blocks, {
-            id:blocks[blocks.length-1].id+1,
-            blockStyle:'p',
-            content: ''
-        }])
-    }, [blocks])
+	const handleOnKeyDown = (index, e) =>{
+		if(e.key === 'Enter'){
+			e.preventDefault()
+			// setEnter(isEnter+1)
+			insertBlock(index)
+		}else if(e.key === 'Backspace' || e.key === 'Delete'){
+			if(blocks[index].content===''&& blocks.length!== 1){
+				deleteBlock(index)
+			}
+		}
+	}
+
+	const insertBlock = (index)=>{ //index of the blocks array
+		const blocksCopy = blocks.map(block=>block)
+		const insertBlock = {id: blockId+1, blockStyle: 'p', content: ''}
+		blocksCopy.splice(index+1, 0, insertBlock) // insert a new block below the current block
+		updateBlocks(blocksCopy)
+		updateBlockId(blockId+1)
+		setBlockIndex(index+1)
+	}
+
+	const deleteBlock = (index) => {
+		const blocksCopy = blocks.map(block=>block)
+		blocksCopy.splice(index, 1) //remove current block
+		updateBlocks(blocksCopy)
+		setBlockIndex(index-1)
+		// blockRef.current.splice(index, 1) //delete current ref not working
+		// console.log(`ref current after delete`, blockRef)
+	}
 
     // const deleteBlock = useCallback((id)=>{
     //     const newBlocks = blocks.filter(block=>block.id != id)
@@ -73,7 +81,6 @@ const Layout = () =>{
                 <ul>
                     <li>Paper Style</li>
                     <li>No Indent</li>
-                    <li onClick={addBlock}>Add Block</li>
                 </ul>
             </nav>
             <Selector/>
@@ -81,12 +88,15 @@ const Layout = () =>{
             <div>
                 { 
                     blocks.map((block, index)=>{
-                        if(index===blocks.length-1){
-                            return <div onInput={()=>handleBlockContent(block.id)} className="editor" contentEditable="true" name ={block.id} suppressContentEditableWarning={true} key={index} value={block.content} onChange={e=>handleBlockContent(block.id, e)} ref={blockRef} style={{color:"red"}}/>
-                        }else{
-                            return <div onInput={()=>handleBlockContent(block.id)} className="editor" contentEditable="true" key={index} name ={block.id} value={block.content} suppressContentEditableWarning={true} onChange={e=>handleBlockContent(block.id, e)}/>
                         
-                        }
+                        return(
+							
+								<div tabindex= '0' ref={e=>blockRef.current[index]=e} onKeyDown={e=>handleOnKeyDown(index,e)} onInput={()=>handleBlockContent(block.id)} name = {block.id} className="editor" contentEditable="true" key={block.id} suppressContentEditableWarning={true}/>
+							
+
+						)
+						
+						
                         
                         
                     })
