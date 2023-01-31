@@ -1,12 +1,16 @@
+
+
 const Selector = () =>{
     return (
         <div className="selector-form">
-            <form>
-                <select>
-                    <option>\section</option>
-                    <option>\subsection</option>
-                    <option>table</option>
-                    <option>equation</option>
+            <form className="form">
+                <select value = {blockType} className='selector-panel'>
+                    <option value = 'title'>Title</option>
+                    <option value = 'section'>section</option>
+                    <option value = 'subsection'>subsection</option>
+                    <option value = 'p'>paragrah</option>
+                    <option value = 'table'>table</option>
+                    <option value = 'equation'>equation</option>
                 </select>
             </form>
         </div>
