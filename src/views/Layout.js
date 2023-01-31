@@ -6,9 +6,9 @@ const Layout = () =>{
 	const [blockId, updateBlockId] = useState(1) //current focuses block id
     const [blockIndex, setBlockIndex] = useState(1) //current focuses block index
 	const [isIndent, setIsIndent] = useState(false)
-	const [blockStyle, setBlockStyle] = useState()
-	const [blockType, setBlockType] = useState()
-	const [isEnter, setEnter] = useState(0)
+	// const [blockStyle, setBlockStyle] = useState()
+	// const [blockType, setBlockType] = useState()
+	// const [isEnter, setEnter] = useState(0)
     // const replaceNode = () =>{
     //     const node = document.querySelector('.editor div')
     //     const p = document.createElement("p");
@@ -17,12 +17,12 @@ const Layout = () =>{
     // }
 
     const blockRef = useRef([])
-	console.log(blocks)
-	console.log(blockRef)
-	console.log(blockIndex)
+	// console.log(blocks)
+	// console.log(blockRef)
+	// console.log(blockIndex)
     useEffect(() => {
         blockRef.current[blockIndex].focus();
-		blocks.map((block, index)=>{
+		blocks.forEach((block, index)=>{
 			blockRef.current[index].innerHTML = block.content
 		})
       }, [blockIndex]);
