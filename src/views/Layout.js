@@ -27,16 +27,22 @@ const Layout = () =>{
 		})
       }, [blockIndex]);
 	
+	
 
 	const handleOnKeyDown = (index, e) =>{
 		if(e.key === 'Enter'){
 			e.preventDefault()
-			// setEnter(isEnter+1)
 			insertBlock(index)
 		}else if(e.key === 'Backspace' || e.key === 'Delete'){
 			if(blocks[index].content===''&& blocks.length!== 1){
 				deleteBlock(index)
 			}
+		}
+	}
+
+	const handleContentPanelOnKeyDown = (e) => {
+		if(e.key === 'Enter'){
+			e.preventDefault()
 		}
 	}
 
@@ -63,10 +69,6 @@ const Layout = () =>{
 
 	}
 
-    // const deleteBlock = useCallback((id)=>{
-    //     const newBlocks = blocks.filter(block=>block.id != id)
-    //     updateBlocks(newBlocks)
-    // }, [blocks])
 
     const handleBlockContent = (id) =>{
 		let content = document.querySelector(`.editor[name="${id}"]`).innerHTML
@@ -79,6 +81,7 @@ const Layout = () =>{
         })
         updateBlocks(newBlocks)
     }
+	
 	const handleBlockStyle = (id, e) =>{
         const newBlocks = blocks.map(block=>{
             if(block.id === id){
@@ -144,14 +147,26 @@ const Layout = () =>{
 					
                 </div>
             </nav>
-            <div>
-				{/* {isEnter} */}
+				<div className="content">
+				<div className="selector-column">
+				{
+					blocks.map((block, index)=>{
+						return (
+							<div className={`selector`}><Selector block = {block}/></div>
+						)
+					})
+				}
+				</div>
+				<div className="content-block-column"
+					// contentEditable='true'
+					// onKeyDown={e=>(handleContentPanelOnKeyDown(e))}
+				>
                 { 
                     blocks.map((block, index)=>{
                         
                         return(
 							<div className="content-block">
-								<div className={`selector`}><Selector block = {block}/></div>
+								
 								<div 
 									tabIndex= '0' 
 									onPaste={(e)=>handlePaste(e, index)}
@@ -164,16 +179,14 @@ const Layout = () =>{
 									contentEditable="true" 
 									key={block.id} 
 									suppressContentEditableWarning={true}/>
-							</div>
+							    </div>
 
-						)
-						
-						
-                        
-                        
+						)   
                     })
                 }
-            </div>
+				</div>
+				</div>
+            {/* </div> */}
         </main>
     )
 }
