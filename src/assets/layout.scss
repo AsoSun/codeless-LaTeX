@@ -20,6 +20,18 @@ html{
         flex-direction: row;
         justify-content: center;
     }
+    .source-btn{
+        display: inline-block;
+        border: 1px solid grey;
+        border-radius: 1rem;
+        position: relative;
+        div{
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;   
+            // padding-bottom: 0.2rem; 
+            font-family: AmericanTypeWriter;
+        }
+    }
     .navbar-items{
         padding: 0.2rem 1rem;
         border-top: thin solid black;

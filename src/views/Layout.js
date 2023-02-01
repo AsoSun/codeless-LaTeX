@@ -152,7 +152,7 @@ const Layout = () =>{
             <nav className="params">
 			{/* <button>current block index: {blockIndex}</button> */}
                 <div className="navbar">
-				
+					
                     <div className="navbar-items">Paper Style</div>
                     <div className="navbar-items"onClick={isIndent?{}:handleIndent}>Indent All</div>
 					
