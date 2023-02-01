@@ -101,12 +101,13 @@ const Layout = () =>{
         })
 		// console.log(`New block Style: ${e.target.value}, work on id: ${id}`)
 		updateBlocks(newBlocks)
+		setIsChangeSelector(true)
 	}
     const Selector = ({block}) =>{
 		return (
 			<div className="selector-form">
 				<form>
-					<select value = {block.blockStyle} onChange={e=>handleBlockStyle(block.id, e)}>
+					<select value = {block.blockStyle} onChange={e=>handleSelector(block.id, e)}>
 						<option value = 'h1'>\title</option>
 						<option value = 'h2'>\section</option>
 						<option value = 'h3'>\subsection</option>
