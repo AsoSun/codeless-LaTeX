@@ -1,80 +1,90 @@
 import { useState, useRef, useEffect} from "react"
 import { initial } from "../store/initial.data"
+import {getCurrentCaretPosition, moveCaret, moveCaretToEnd} from "../utils/caretPosition"
 
 const Layout = () =>{
     const [blocks, updateBlocks]= useState(initial)
-	const [blockId, updateBlockId] = useState(1) //current focuses block id
-    const [blockIndex, setBlockIndex] = useState(1) //current focuses block index
+	const [blockId, updateBlockId] = useState(initial.length-1) //current focuses block id
+    const [blockIndex, updateBlockIndex] = useState(initial.length-1) //current focuses block index
 	const [isIndent, setIsIndent] = useState(false)
-	// const [blockStyle, setBlockStyle] = useState()
-	// const [blockType, setBlockType] = useState()
-	// const [isEnter, setEnter] = useState(0)
-    // const replaceNode = () =>{
-    //     const node = document.querySelector('.editor div')
-    //     const p = document.createElement("p");
-    //     p.innerHTML = node.innerHTML
-    //     node.replaceWith(p)
-    // }
+	const [isDeleBlock, setIsDeleBlock] = useState(false)
+	const [LastBlockContentLength, setLastBlockContentLength] = useState()
+	const [isOnBlur, setIsOnBlur] = useState(false)
+	const blockRef = useRef([])
 
-    const blockRef = useRef([])
-	// console.log(blocks)
-	// console.log(blockRef)
-	// console.log(blockIndex)
+
+	
     useEffect(() => {
-        blockRef.current[blockIndex].focus();
 		blocks.forEach((block, index)=>{
-			blockRef.current[index].innerHTML = block.content
+			blockRef.current[index].textContent = block.content
 		})
+		blockRef.current[blockIndex].focus();
+		if(isDeleBlock){
+			console.log(LastBlockContentLength)
+			moveCaret(LastBlockContentLength)
+		}
+		setIsDeleBlock(false)
       }, [blockIndex]);
-	
-	
 
-	const handleOnKeyDown = (index, e) =>{
+	useEffect(()=>{
+		blockRef.current[blockIndex].focus();
+		moveCaretToEnd()
+		setIsOnBlur(false)
+	  },[isOnBlur])
+
+
+	function handleOnKeyDown(index, e){
+		
 		if(e.key === 'Enter'){
 			e.preventDefault()
-			insertBlock(index)
-		}else if(e.key === 'Backspace' || e.key === 'Delete'){
-			if(blocks[index].content===''&& blocks.length!== 1){
+			insertBlock(index)		
+		}
+		else if(e.key === 'Backspace' || e.key === 'Delete'){
+			const lengthOfCharBeforeCursor = getCurrentCaretPosition()
+			if(lengthOfCharBeforeCursor===0 && blocks.length!== 1){
+				e.preventDefault()
 				deleteBlock(index)
+				setIsDeleBlock(true)
+					
 			}
 		}
 	}
 
-	const handleContentPanelOnKeyDown = (e) => {
-		if(e.key === 'Enter'){
-			e.preventDefault()
-		}
-	}
-
 	const insertBlock = (index)=>{ //index of the blocks array
+		const currentCursorPosition = getCurrentCaretPosition()
+		const contentAfterCursor = blocks[index].content.slice(currentCursorPosition)
 		const blocksCopy = blocks.map(block=>block)
-		const insertBlock = {id: blockId+1, blockStyle: 'p', content: ''}
+		blocksCopy[index].content = blocks[index].content.slice(0,currentCursorPosition)
+		const insertBlock = {id: blockId+1, blockStyle: 'p', content: contentAfterCursor}
 		blocksCopy.splice(index+1, 0, insertBlock) // insert a new block below the current block
 		updateBlocks(blocksCopy)
 		updateBlockId(blockId+1)
-		setBlockIndex(index+1)
+		updateBlockIndex(index+1)
 	}
 
 	const deleteBlock = (index) => {
 		const blocksCopy = blocks.map(block=>block)
+		setLastBlockContentLength(blocksCopy[index-1].content.length)
+		blocksCopy[index-1].content = blocksCopy[index-1].content+blocksCopy[index].content
 		blocksCopy.splice(index, 1) //remove current block
+
+		
 		updateBlocks(blocksCopy)
 		if(index === 0){
-			setBlockIndex(0)
+			updateBlockIndex(0)
 		}else(
-			setBlockIndex(index-1)
+			updateBlockIndex(index-1)
 		)
-	
-		//inject content back to innerhtml
-
+		
 	}
 
 
-    const handleBlockContent = (id) =>{
-		let content = document.querySelector(`.editor[name="${id}"]`).innerHTML
+    const handleBlockContent = (id, e) =>{
+		// let content = document.querySelector(`.editor[name="${id}"]`).innerHTML
+		console.log(`On Input textContent: ${e.target.textContent}`)
         const newBlocks = blocks.map(block=>{
             if(block.id === id){
-                return {...block, content: content}
+                return {...block, content: e.target.textContent}
             }else{
                 return block
             }
@@ -90,7 +100,7 @@ const Layout = () =>{
                 return block
             }
         })
-		console.log(`New block Style: ${e.target.value}, work on id: ${id}`)
+		// console.log(`New block Style: ${e.target.value}, work on id: ${id}`)
 		updateBlocks(newBlocks)
 	}
     const Selector = ({block}) =>{
@@ -102,7 +112,7 @@ const Layout = () =>{
 						<option value = 'h2'>\section</option>
 						<option value = 'h3'>\subsection</option>
 						<option value = 'p'>paragrah</option>
-						<option value = 'table'>\abstract</option>
+						<option value = 'abstract'>\abstract</option>
 						<option value = 'equation'>equation</option>
 					</select> 
 				</form>
@@ -135,11 +145,12 @@ const Layout = () =>{
 		}))
 		// setIsIndent(true)
 	}
+
     
     return (
         <main>
             <nav className="params">
-			<button>Source mode</button>
+			{/* <button>current block index: {blockIndex}</button> */}
                 <div className="navbar">
 				
                     <div className="navbar-items">Paper Style</div>
@@ -147,46 +158,49 @@ const Layout = () =>{
 					
                 </div>
             </nav>
-				<div className="content">
-				<div className="selector-column">
-				{
-					blocks.map((block, index)=>{
-						return (
-							<div className={`selector`}><Selector block = {block}/></div>
-						)
-					})
-				}
-				</div>
-				<div className="content-block-column"
-					// contentEditable='true'
-					// onKeyDown={e=>(handleContentPanelOnKeyDown(e))}
+				<div>
+				
+	
+				<div
+					id='editor'
+					// onBlur={()=>setIsOnBlur(true)}
+				
 				>
                 { 
                     blocks.map((block, index)=>{
                         
                         return(
 							<div className="content-block">
+								<div >
+									
+										
+									<div contentEditable={false} className={`selector`}><Selector block = {block}/></div>
+											
+									
+								</div>
 								
 								<div 
-									tabIndex= '0' 
+									// tabIndex= {1} 
 									onPaste={(e)=>handlePaste(e, index)}
 									// onFocus={()=>handleOnFocus(index)} 
-									className = {`editor ${block.blockStyle}`} 
+									className = {`content ${block.blockStyle}`} 
+									
 									ref={e=>blockRef.current[index]=e} 
 									onKeyDown={e=>handleOnKeyDown(index,e)} 
-									onInput={()=>handleBlockContent(block.id)} 
-									name = {block.id}  
-									contentEditable="true" 
-									key={block.id} 
+									onInput={(e)=>handleBlockContent(block.id, e)} 
+									name = {block.id}   
+									key={block.id}
+									contentEditable={true} 
+									onFocus={()=>updateBlockIndex(index)}
 									suppressContentEditableWarning={true}/>
-							    </div>
+							    </div> 
 
 						)   
                     })
                 }
 				</div>
 				</div>
-            {/* </div> */}
+           
         </main>
     )
 }

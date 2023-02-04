@@ -79,24 +79,24 @@ select{
     border-radius: 6px;
     box-sizing: border-box;
     border: none;
-    color:rgb(0, 0, 0);
+    color:rgba(29, 112, 1, 0.781);
     margin: auto;
 }
 
-.content{
+.content-block{
     display: flex;
-
-    .content-block-column{
-        background-color: antiquewhite;
-        
+    div{
+        margin-right: 2px;
     }
-    .selector-column{
-       
-       
+    .selector{
+        opacity: 0;
+    }
+    &:hover{
         .selector{
-            // display:inline-block;
-            background-color: red;
-           
+            opacity: 1;
+            transition-duration: 0.2s;
+            transition-timing-function: ease-in;
         }
     }
+
 }

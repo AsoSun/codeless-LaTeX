@@ -8,7 +8,7 @@ function App() {
         <Layout/>
       </body>
     </div>
-  );
+  )
 }
 
 export default App;

@@ -1,7 +1,7 @@
 export const initial = [{
 	id: 0,
 	blockStyle: 'h1',
-	content: 'This is Codeless LaTex Playground beta'
+	content: 'This is a Demo of the Codeless LaTeX Playground'
 },
 {
 	id: 1,
