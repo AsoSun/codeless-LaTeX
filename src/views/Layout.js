@@ -12,8 +12,6 @@ const Layout = () =>{
 	const [isOnBlur, setIsOnBlur] = useState(false)
 	const blockRef = useRef([])
 
-
-	
     useEffect(() => {
 		blocks.forEach((block, index)=>{
 			blockRef.current[index].textContent = block.content
