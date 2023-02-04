@@ -9,7 +9,7 @@ const Layout = () =>{
 	const [isIndent, setIsIndent] = useState(false)
 	const [isDeleBlock, setIsDeleBlock] = useState(false)
 	const [LastBlockContentLength, setLastBlockContentLength] = useState()
-	const [isOnBlur, setIsOnBlur] = useState(false)
+
 	const blockRef = useRef([])
 
     useEffect(() => {
@@ -27,8 +27,8 @@ const Layout = () =>{
 	useEffect(()=>{
 		blockRef.current[blockIndex].focus();
 		moveCaretToEnd()
-		setIsOnBlur(false)
-	  },[isOnBlur])
+		
+	  },[])
 
 
 	  
