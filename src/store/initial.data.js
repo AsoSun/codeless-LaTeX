@@ -6,6 +6,6 @@ export const initial = [{
 {
 	id: 1,
 	blockStyle: 'p',
-	content: ''
+	content: 'Write something here'
 },
 ]

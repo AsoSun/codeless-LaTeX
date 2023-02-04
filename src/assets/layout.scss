@@ -99,17 +99,24 @@ select{
 .content-block{
     display: flex;
     div{
-        margin-right: 2px;
+        margin-right: 3px;
+        display: flex;
     }
     .selector{
         opacity: 0;
     }
     &:hover{
         .selector{
+            // display: inline-block;
             opacity: 1;
             transition-duration: 0.2s;
             transition-timing-function: ease-in;
         }
+    }
+    .content{
+        width: 100rem; //very Important
+        
+        
     }
 
 }
