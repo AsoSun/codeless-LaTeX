@@ -106,7 +106,7 @@ const Layout = () =>{
 		return (
 			<div className="selector-form">
 				<form>
-					<select value = {block.blockStyle} onChange={e=>handleSelector(block.id, e)}>
+					<select value = {block.blockStyle} onChange={e=>handleBlockStyle(block.id, e)}>
 						<option value = 'h1'>\title</option>
 						<option value = 'h2'>\section</option>
 						<option value = 'h3'>\subsection</option>
