@@ -101,7 +101,6 @@ const Layout = () =>{
         })
 		// console.log(`New block Style: ${e.target.value}, work on id: ${id}`)
 		updateBlocks(newBlocks)
-		setIsChangeSelector(true)
 	}
     const Selector = ({block}) =>{
 		return (
