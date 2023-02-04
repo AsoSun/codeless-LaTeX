@@ -107,15 +107,16 @@ select{
     }
     &:hover{
         .selector{
-            // display: inline-block;
+            display: inline-block;
             opacity: 1;
             transition-duration: 0.2s;
             transition-timing-function: ease-in;
         }
     }
     .content{
+        display: inline; //very Important
         width: 100rem; //very Important
-        
+       
         
     }
 

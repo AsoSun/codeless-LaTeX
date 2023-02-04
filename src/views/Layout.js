@@ -9,20 +9,21 @@ const Layout = () =>{
 	const [isIndent, setIsIndent] = useState(false)
 	const [isDeleBlock, setIsDeleBlock] = useState(false)
 	const [LastBlockContentLength, setLastBlockContentLength] = useState()
+	const [isChangeStyle, setIsChangeStyle] = useState(false)
 
 	const blockRef = useRef([])
-
+	console.log(blocks)
     useEffect(() => {
 		blocks.forEach((block, index)=>{
 			blockRef.current[index].textContent = block.content
 		})
 		blockRef.current[blockIndex].focus();
 		if(isDeleBlock){
-			console.log(LastBlockContentLength)
 			moveCaret(LastBlockContentLength)
 		}
 		setIsDeleBlock(false)
-      }, [blockIndex]);
+		setIsChangeStyle(false)
+      }, [blockIndex, isChangeStyle]);
 
 	useEffect(()=>{
 		blockRef.current[blockIndex].focus();
@@ -66,8 +67,6 @@ const Layout = () =>{
 		setLastBlockContentLength(blocksCopy[index-1].content.length)
 		blocksCopy[index-1].content = blocksCopy[index-1].content+blocksCopy[index].content
 		blocksCopy.splice(index, 1) //remove current block
-
-		
 		updateBlocks(blocksCopy)
 		if(index === 0){
 			updateBlockIndex(0)
@@ -80,7 +79,7 @@ const Layout = () =>{
 
     const handleBlockContent = (id, e) =>{
 		// let content = document.querySelector(`.editor[name="${id}"]`).innerHTML
-		console.log(`On Input textContent: ${e.target.textContent}`)
+		
         const newBlocks = blocks.map(block=>{
             if(block.id === id){
                 return {...block, content: e.target.textContent}
@@ -101,6 +100,7 @@ const Layout = () =>{
         })
 		// console.log(`New block Style: ${e.target.value}, work on id: ${id}`)
 		updateBlocks(newBlocks)
+		setIsChangeStyle(true)
 	}
     const Selector = ({block}) =>{
 		return (
@@ -179,7 +179,7 @@ const Layout = () =>{
 								</div>
 								
 								<div 
-									// tabIndex= {1} 
+									
 									onPaste={(e)=>handlePaste(e, index)}
 									// onFocus={()=>handleOnFocus(index)} 
 									className = {`content ${block.blockStyle}`} 
