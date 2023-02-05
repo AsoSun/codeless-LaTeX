@@ -7,23 +7,23 @@ const Layout = () =>{
 	const [blockId, updateBlockId] = useState(initial.length-1) //current focuses block id
     const [blockIndex, updateBlockIndex] = useState(initial.length-1) //current focuses block index
 	const [isIndent, setIsIndent] = useState(false)
-	const [isDeleBlock, setIsDeleBlock] = useState(false)
+	const [isMoveCaret, setIsMoveCaret] = useState(false)
 	const [LastBlockContentLength, setLastBlockContentLength] = useState()
 	const [isChangeStyle, setIsChangeStyle] = useState(false)
 
 	const blockRef = useRef([])
-	console.log(blocks)
+
     useEffect(() => {
 		blocks.forEach((block, index)=>{
 			blockRef.current[index].textContent = block.content
 		})
 		blockRef.current[blockIndex].focus();
-		if(isDeleBlock){
+		if(isMoveCaret){
 			moveCaret(LastBlockContentLength)
 		}
-		setIsDeleBlock(false)
+		setIsMoveCaret(false)
 		setIsChangeStyle(false)
-      }, [blockIndex, isChangeStyle]);
+      }, [blockIndex, isChangeStyle, isMoveCaret]);
 
 	useEffect(()=>{
 		blockRef.current[blockIndex].focus();
@@ -34,20 +34,36 @@ const Layout = () =>{
 
 	  
 	function handleOnKeyDown(index, e){
-		
+		const lengthOfCharBeforeCursor = getCurrentCaretPosition()
 		if(e.key === 'Enter'){
 			e.preventDefault()
 			insertBlock(index)		
 		}
 		else if(e.key === 'Backspace' || e.key === 'Delete'){
-			const lengthOfCharBeforeCursor = getCurrentCaretPosition()
+			
 			if(lengthOfCharBeforeCursor===0 && blocks.length!== 1){
 				e.preventDefault()
 				deleteBlock(index)
-				setIsDeleBlock(true)
-					
+				setIsMoveCaret(true)		
 			}
 		}
+		else if(e.key ==='ArrowDown'){
+			if(lengthOfCharBeforeCursor === e.target.textContent.length){
+				e.preventDefault()
+				updateBlockIndex(index+1)
+			}
+		}
+		else if(e.key ==='ArrowUp'){
+			if(lengthOfCharBeforeCursor === 0){
+				e.preventDefault()
+				if(index-1>=0){
+					updateBlockIndex(index-1) //move to above block
+					setLastBlockContentLength(blocks[index-1].content.length)
+					setIsMoveCaret(true)
+				}
+			}
+		}
+		
 	}
 
 	const insertBlock = (index)=>{ //index of the blocks array
@@ -162,6 +178,7 @@ const Layout = () =>{
 	
 				<div
 					id='editor'
+					// contentEditable={true}
 					// onBlur={()=>setIsOnBlur(true)}
 				
 				>
@@ -179,7 +196,7 @@ const Layout = () =>{
 								</div>
 								
 								<div 
-									
+									tabIndex={1}
 									onPaste={(e)=>handlePaste(e, index)}
 									// onFocus={()=>handleOnFocus(index)} 
 									className = {`content ${block.blockStyle}`} 

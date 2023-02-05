@@ -3,7 +3,7 @@ export const getCurrentCaretPosition = () =>{
     const selection = document.getSelection()
     //if selected area type is text, return the number(length) of char before the caret/cursor
     //focusOffset is read only, i.e. a getter
-    console.log(selection.focusOffset)
+    // console.log(selection.focusOffset)
     return selection.focusOffset
 }
 
