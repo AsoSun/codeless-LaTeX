@@ -50,7 +50,10 @@ const Layout = () =>{
 		else if(e.key ==='ArrowDown'){
 			if(lengthOfCharBeforeCursor === e.target.textContent.length){
 				e.preventDefault()
-				updateBlockIndex(index+1)
+				if(blocks.length>index+1){
+					updateBlockIndex(index+1)
+				}
+				
 			}
 		}
 		else if(e.key ==='ArrowUp'){
